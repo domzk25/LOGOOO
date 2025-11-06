@@ -1,0 +1,66 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to top, #0f2027, #292043, #45642c);
+  overflow: hidden;
+}
+
+.background-animation {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: url('clouds.gif') repeat-x;
+  animation: moveClouds 60s linear infinite;
+  z-index: -1;
+}
+
+@keyframes moveClouds {
+  from { background-position: 0 0; }
+  to { background-position: -10000px 0; }
+}
+
+.login-container {
+  position: relative;
+  top: 20%;
+  margin: auto;
+  width: 300px;
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  text-align: center;
+  color: #fff;
+  box-shadow: 0 0 20px #f9d71c;
+}
+
+.naruto-entrance {
+  width: 100px;
+  animation: runIn 2s ease-out forwards;
+}
+
+@keyframes runIn {
+  from { transform: translateX(-300px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+input {
+  width: 80%;
+  padding: 10px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 5px;
+}
+
+.chakra-button {
+  padding: 10px 20px;
+  background: #f9d71c;
+  border: none;
+  border-radius: 5px;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  transition: box-shadow 0.3s ease;
+}
+
+.chakra-button:hover {
+  box-shadow: 0 0 15px #f9d71c, 0 0 30px #f9d71c;
+}
