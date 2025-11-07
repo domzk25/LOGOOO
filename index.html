@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jonsky Shop</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #000;
+      color: #ffd700;
+    }
+
+    header, nav, section {
+      padding: 20px;
+      border-bottom: 2px solid #ffd700;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      background-color: #222;
+    }
+
+    nav a {
+      color: #ffd700;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    input, button {
+      margin: 5px 0;
+      padding: 10px;
+      background-color: #333;
+      color: #ffd700;
+      border: none;
+      width: 100%;
+      max-width: 300px;
+    }
+
+    button:hover {
+      background-color: #444;
+      cursor: pointer;
+    }
+
+    .product {
+      border: 1px solid #ffd700;
+      padding: 10px;
+      margin-top: 15px;
+      background-color: #111;
+    }
+
+    .product img {
+      max-width: 200px;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    #qrContainer {
+      display: none;
+      margin-top: 15px;
+    }
+
+    #cartSummary {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    #adminControls {
+      display: none;
+    }
+
+    a {
+      color: #ffd700;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Welcome to my Jonsky Shop</h1>
+  </header>
+
+  <nav>
+    <a href="#products">🛒 Products</a>
+    <a href="#payment">💳 GCash</a>
+    <a href="#contact">📞 Contact</a>
+  </nav>
+
+  <section id="products">
+    <h2>Product Management</h2>
+
+    <div id="adminControls">
+      <label for="itemName">Item Name:</label>
+      <input type="text" id="itemName" placeholder="e.g. Wireless Headphones" />
+
+      <label for="itemImage">Upload Image:</label>
+      <input type="file" id="itemImage" accept="image/*" />
+
+      <label for="itemPrice">Write Price:</label>
+      <input type="text" id="itemPrice" placeholder="₱0.00" />
+
+      <button onclick="addProduct()">Add Product</button>
+    </div>
+
+    <div id="productList"></div>
+
+    <div id="cartSummary">🧾 Cart Total: ₱<span id="cartTotal">0.00</span></div>
+  </section>
+
+  <section id="payment">
+    <h2>GCash Payment</h2>
+    <button onclick="showQR()">Click to Pay with GCash</button>
+    <div id="qrContainer">
+      <p>Scan this QR code to pay:</p>
+      <img src="c:\Users\User\Downloads\gcash qr code.jpeg" alt="GCash QR Code" width="200" />
+    </div>
+  </section>
+
+  <section id="contact">
+    <h2>Contact Us</h2>
+    <p>📱 Cellphone: 09358252540</p>
+    <p>💬 Facebook: <a href="https://www.facebook.com/tyler.d.well.2025" target="_blank">Message us</a></p>
+  </section>
+
+  <script>
+    let cartTotal = 0;
+    let isUnlocked = false;
+
+    function unlockAdmin() {
+      const password = prompt("Enter admin password:");
+      if (password === "jonsky123") {
+        isUnlocked = true;
+        document.getElementById('adminControls').style.display = 'block';
+      }
+    }
+
+    function addProduct() {
+      if (!isUnlocked) return;
+
+      const nameInput = document.getElementById('itemName');
+      const imageInput = document.getElementById('itemImage');
+      const priceInput = document.getElementById('itemPrice');
+      const productList = document.getElementById('productList');
+
+      if (
+        nameInput.value.trim() === '' ||
+        imageInput.files.length === 0 ||
+        priceInput.value.trim() === ''
+      ) {
+        alert('Please enter item name, upload an image, and write a price.');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const productDiv = document.createElement('div');
+        productDiv.className = 'product';
+
+        productDiv.innerHTML = `
+          <img src="${e.target.result}" alt="Product Image" />
+          <p>Price: ₱${priceInput.value}</p>
+          <p><strong>Item: ${nameInput.value}</strong></p>
+          <button onclick="addToCart(${priceInput.value})">Add to Cart</button>
+        `;
+
+        productList.appendChild(productDiv);
+        updateStorage();
+
+        nameInput.value = '';
+        imageInput.value = '';
+        priceInput.value = '';
+      };
+      reader.readAsDataURL(imageInput.files[0]);
+    }
+
+    function addToCart(price) {
+      cartTotal += parseFloat(price);
+      document.getElementById('cartTotal').textContent = cartTotal.toFixed(2);
+    }
+
+    function showQR() {
+      document.getElementById('qrContainer').style.display = 'block';
+    }
+
+    function updateStorage() {
+      const items = document.getElementById('productList').innerHTML;
+      localStorage.setItem('jonskyProducts', items);
+    }
+
+    function loadStorage() {
+      const saved = localStorage.getItem('jonskyProducts');
+      if (saved) {
+        document.getElementById('productList').innerHTML = saved;
+      }
+    }
+
+    window.onload = function () {
+      loadStorage();
+      unlockAdmin();
+    };
+  </script>
+
+</body>
+</html>
